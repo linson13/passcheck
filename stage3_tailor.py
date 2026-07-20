@@ -8,7 +8,7 @@ import json
 import config
 import utils
 import llm_client
-from BaseCVTemplate import build_cv_from_data
+from templates import build_resume, DEFAULT_TEMPLATE
 
 SYSTEM_PROMPT = """You are an expert resume writer specializing in ATS-friendly resumes.
 Tailor the candidate's resume to the job description provided.
@@ -43,10 +43,11 @@ def _extract_keywords(jd_dict: dict) -> list:
 # -----------------------------
 # 🚀 Main Function
 # -----------------------------
-def tailor_resume_with_llama(candidate_input, jd_input, client=None, output_pdf_path=None):
+def tailor_resume_with_llama(candidate_input, jd_input, client=None, output_pdf_path=None,
+                              template_id: str = DEFAULT_TEMPLATE):
     """
     Uses an LLM to generate a tailored, ATS-friendly resume and formats it
-    using the predefined BaseCVTemplate.
+    using the selected resume template.
 
     Returns
     -------
@@ -72,7 +73,7 @@ def tailor_resume_with_llama(candidate_input, jd_input, client=None, output_pdf_
     )
     sections = llm_client.generate_json(client, SYSTEM_PROMPT, user_prompt,
                                          temperature=0.4, max_tokens=1800)
-    # Normalize keys to uppercase to match BaseCVTemplate's SECTION_ORDER
+    # Normalize keys to uppercase to match the template's SECTION_ORDER
     sections = {str(k).upper(): str(v) for k, v in sections.items()}
     text = "\n\n".join(f"{k}\n{v}" for k, v in sections.items())
 
@@ -81,9 +82,9 @@ def tailor_resume_with_llama(candidate_input, jd_input, client=None, output_pdf_
         candidate_name = candidate_data.get("name") or candidate_data.get("full_name") or "candidate"
         output_pdf_path = utils.get_pdf_output_path(candidate_name)
 
-    # 4️⃣ Build PDF using predefined template
-    utils.log_status("🖋️ Building ATS-friendly formatted PDF...")
-    build_cv_from_data(candidate_data, sections, output_pdf_path)
+    # 4️⃣ Build PDF using the selected template
+    utils.log_status(f"🖋️ Building ATS-friendly formatted PDF ({template_id})...")
+    build_resume(template_id, candidate_data, sections, output_pdf_path)
     utils.log_status(f"✅ Tailored resume saved at: {output_pdf_path}")
 
     # 5️⃣ ATS Comparison
