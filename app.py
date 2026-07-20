@@ -20,6 +20,7 @@ import stage1_resume
 import stage2_jd
 import stage3_tailor
 import llm_client
+from templates import list_templates, TEMPLATES, DEFAULT_TEMPLATE
 
 app = FastAPI(title="ATS Resume Tailor")
 
@@ -35,13 +36,17 @@ MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5 MB
 
 
 @app.post("/api/tailor")
-async def tailor_resume(resume: UploadFile = File(...), jd_text: str = Form(...)):
+async def tailor_resume(resume: UploadFile = File(...), jd_text: str = Form(...),
+                         template: str = Form(DEFAULT_TEMPLATE)):
     ext = os.path.splitext(resume.filename or "")[-1].lower()
     if ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(400, "Please upload a .pdf, .docx, or .txt resume.")
 
     if not jd_text or not jd_text.strip():
         raise HTTPException(400, "Please paste the job description.")
+
+    if template not in TEMPLATES:
+        template = DEFAULT_TEMPLATE
 
     job_id = uuid.uuid4().hex
     job_path = config.job_dir(job_id)
@@ -66,6 +71,7 @@ async def tailor_resume(resume: UploadFile = File(...), jd_text: str = Form(...)
         tailored_text, pdf_path, ats_report = stage3_tailor.tailor_resume_with_llama(
             candidate_data, jd_data, client,
             output_pdf_path=os.path.join(job_path, "tailored_resume.pdf"),
+            template_id=template,
         )
     except RuntimeError as e:
         # e.g. missing GROQ_API_KEY server-side
@@ -91,6 +97,11 @@ async def download_resume(job_id: str):
     if not os.path.exists(pdf_path):
         raise HTTPException(404, "Resume not found or has expired.")
     return FileResponse(pdf_path, media_type="application/pdf", filename="tailored_resume.pdf")
+
+
+@app.get("/api/templates")
+async def get_templates():
+    return {"templates": list_templates(), "default": DEFAULT_TEMPLATE}
 
 
 @app.get("/api/health")
