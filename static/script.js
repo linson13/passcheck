@@ -18,6 +18,42 @@ const downloadBtn = document.getElementById('download-btn');
 const resetBtn = document.getElementById('reset-btn');
 
 let selectedFile = null;
+let selectedTemplate = null;
+const templateGrid = document.getElementById('template-grid');
+
+// ---- Load templates on page load ----
+async function loadTemplates() {
+  try {
+    const res = await fetch('/api/templates');
+    const data = await res.json();
+    selectedTemplate = data.default;
+    renderTemplateGrid(data.templates, data.default);
+  } catch (err) {
+    templateGrid.innerHTML = '<p class="hint">Couldn\'t load templates — the default will be used.</p>';
+    selectedTemplate = 'classic';
+  }
+}
+
+function renderTemplateGrid(templates, defaultId) {
+  templateGrid.innerHTML = '';
+  templates.forEach((t) => {
+    const card = document.createElement('div');
+    card.className = 'template-card' + (t.id === defaultId ? ' selected' : '');
+    card.dataset.templateId = t.id;
+    card.innerHTML = `
+      <p class="tpl-name">${escapeHtml(t.name)}</p>
+      <p class="tpl-desc">${escapeHtml(t.description)}</p>
+    `;
+    card.addEventListener('click', () => {
+      selectedTemplate = t.id;
+      document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+    templateGrid.appendChild(card);
+  });
+}
+
+loadTemplates();
 
 // ---- Dropzone interactions ----
 dropzone.addEventListener('click', () => resumeInput.click());
@@ -108,6 +144,7 @@ form.addEventListener('submit', async (e) => {
     const formData = new FormData();
     formData.append('resume', selectedFile);
     formData.append('jd_text', jdInput.value);
+    formData.append('template', selectedTemplate || 'classic');
 
     const res = await fetch('/api/tailor', { method: 'POST', body: formData });
     const data = await res.json();
