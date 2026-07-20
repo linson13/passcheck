@@ -1,1 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passcheck — Tailor your resume past the ATS gate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<div class="grain"></div>
+
+<header class="topbar">
+  <div class="wordmark">Pass<span>check</span></div>
+  <div class="tagline">get past the gate</div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <p class="eyebrow">Applicant Tracking Systems reject most resumes before a human ever reads them</p>
+    <h1>Your resume meets<br>the gate first.</h1>
+    <p class="sub">Upload your resume, paste the job description. We tailor your resume to the role and hand you back a version built to clear the filter.</p>
+  </section>
+
+  <section class="intake" id="intake-section">
+    <form id="tailor-form">
+      <div class="intake-grid">
+
+        <div class="field">
+          <label for="resume-input" class="field-label">01 — The document</label>
+          <div class="dropzone" id="dropzone">
+            <input type="file" id="resume-input" name="resume" accept=".pdf,.docx,.txt" hidden>
+            <div class="dropzone-inner" id="dropzone-inner">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12m0-12 4 4m-4-4-4 4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+              <p><strong>Drop your resume</strong> or click to browse</p>
+              <p class="hint">.pdf · .docx · .txt — up to 5MB</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="jd-input" class="field-label">02 — The role</label>
+          <textarea id="jd-input" name="jd_text" placeholder="Paste the full job description here — responsibilities, requirements, preferred skills..." required></textarea>
+        </div>
+
+      </div>
+
+      <button type="submit" id="submit-btn" class="submit-btn">
+        <span class="btn-label">Tailor my resume</span>
+      </button>
+      <p class="error-msg" id="error-msg"></p>
+    </form>
+  </section>
+
+  <section class="processing" id="processing-section" hidden>
+    <div class="gate">
+      <div class="gate-bar"></div>
+      <p class="gate-status" id="gate-status">Reading your resume…</p>
+    </div>
+  </section>
+
+  <section class="results" id="results-section" hidden>
+    <div class="stamp-row">
+      <div class="stamp stamp-before">
+        <span class="stamp-label">before</span>
+        <span class="stamp-score" id="score-before">—%</span>
+        <span class="stamp-verdict">rejected</span>
+      </div>
+      <div class="stamp-arrow">→</div>
+      <div class="stamp stamp-after" id="stamp-after">
+        <span class="stamp-label">after</span>
+        <span class="stamp-score" id="score-after">—%</span>
+        <span class="stamp-verdict">passed</span>
+      </div>
+    </div>
+    <p class="improvement" id="improvement-text"></p>
+    <a href="#" id="download-btn" class="submit-btn download-btn">
+      <span class="btn-label">Download tailored resume</span>
+    </a>
+    <button class="reset-btn" id="reset-btn">Tailor another</button>
+  </section>
+
+</main>
+
+<footer>
+  <p>Passcheck tailors wording and structure to match a job description. It doesn't fabricate experience — review the output before you send it.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
