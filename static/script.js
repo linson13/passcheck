@@ -41,16 +41,37 @@ function renderTemplateGrid(templates, defaultId) {
     card.className = 'template-card' + (t.id === defaultId ? ' selected' : '');
     card.dataset.templateId = t.id;
     card.innerHTML = `
+      <div class="tpl-thumb-wrap">
+        <img class="tpl-thumb" src="/template-previews/${t.id}.png" alt="${escapeHtml(t.name)} template preview" loading="lazy">
+        <span class="tpl-zoom-hint">view larger</span>
+      </div>
       <p class="tpl-name">${escapeHtml(t.name)}</p>
       <p class="tpl-desc">${escapeHtml(t.description)}</p>
     `;
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (e) => {
       selectedTemplate = t.id;
       document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
     });
+    card.querySelector('.tpl-thumb-wrap').addEventListener('click', (e) => {
+      e.stopPropagation();
+      openLightbox(`/template-previews/${t.id}.png`, t.name);
+    });
     templateGrid.appendChild(card);
   });
+}
+
+function openLightbox(src, name) {
+  const overlay = document.createElement('div');
+  overlay.className = 'lightbox-overlay';
+  overlay.innerHTML = `
+    <div class="lightbox-inner">
+      <img src="${src}" alt="${escapeHtml(name)} template, full preview">
+      <p class="lightbox-caption">${escapeHtml(name)} — click anywhere to close</p>
+    </div>
+  `;
+  overlay.addEventListener('click', () => overlay.remove());
+  document.body.appendChild(overlay);
 }
 
 loadTemplates();
