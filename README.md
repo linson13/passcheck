@@ -4,6 +4,8 @@
 
 <p align="center">Upload your resume and a job description — Passcheck tailors your resume to match the role using an LLM, then scores it against ATS keyword matching before and after. Get back a clean, ATS-friendly PDF, generated in seconds.</p>
 
+**🔗 Live demo: [passcheck-xpbc.onrender.com](https://passcheck-xpbc.onrender.com)**
+
 [![Stars](https://img.shields.io/github/stars/linson13/passcheck?style=flat-square)](https://github.com/linson13/passcheck/stargazers) [![Forks](https://img.shields.io/github/forks/linson13/passcheck?style=flat-square)](https://github.com/linson13/passcheck/network) [![Issues](https://img.shields.io/github/issues/linson13/passcheck?style=flat-square)](https://github.com/linson13/passcheck/issues) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 ![Python](https://img.shields.io/badge/-Python-555?style=flat-square&logo=python) ![FastAPI](https://img.shields.io/badge/-FastAPI-555?style=flat-square&logo=fastapi) ![JavaScript](https://img.shields.io/badge/-JavaScript-555?style=flat-square&logo=javascript) ![HTML](https://img.shields.io/badge/-HTML-555?style=flat-square&logo=html5) ![CSS](https://img.shields.io/badge/-CSS-555?style=flat-square&logo=css3)
@@ -60,7 +62,7 @@ cp .env.example .env
 uvicorn app:app --reload
 ```
 
-Then open **http://127.0.0.1:8000**
+The app will run locally at the URL printed in your terminal.
 
 ## 🌐 Deploying (Render, free tier)
 
@@ -69,7 +71,7 @@ Then open **http://127.0.0.1:8000**
    - Build command: `pip install -r requirements.txt`
    - Start command: `uvicorn app:app --host 0.0.0.0 --port $PORT`
 3. In the service's **Environment** tab, add `GROQ_API_KEY` with your real key. **Never commit your real key** — `.env` is gitignored for this reason.
-4. Deploy. Render gives you a public URL (`https://passcheck.onrender.com`-style) that anyone can use.
+4. Deploy. Render gives you a public URL that anyone can use.
 
 > **Free tier note:** Render's free web services spin down after inactivity and take ~30–60s to wake up on the next request — fine for personal/demo use, worth upgrading to a paid instance if you expect steady traffic.
 
