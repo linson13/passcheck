@@ -12,7 +12,12 @@ Read the resume text and extract structured candidate data.
 Respond ONLY with a JSON object using exactly these keys:
 name, email, phone, location, education, skills, experience, projects.
 - "skills" must be a list of strings.
-- "education", "experience", "projects" must be lists of strings (one entry per item).
+- "education" must be a list of strings (one entry per degree/institution).
+- "experience" and "projects" must be lists of strings, ONE STRING PER ROLE OR PROJECT.
+  Each string must include the title/name, dates if present, AND the full description or
+  bullet points underneath it exactly as detail-rich as the original resume — do not
+  reduce a project or role to just its title and dates. Join multiple bullet points
+  within one entry using "; " so each list item stays a single string.
 - Fill missing fields with null (for strings) or [] (for lists).
 - Do not include any commentary outside the JSON object."""
 
@@ -51,6 +56,7 @@ def extract_resume_data(resume_input, client=None, out_path=None):
         client,
         SYSTEM_PROMPT,
         f"Resume:\n{resume_text}",
+        max_tokens=2500,
     )
 
     # Step 3 – Save structured JSON output
