@@ -12,10 +12,19 @@ from templates import build_resume, DEFAULT_TEMPLATE
 
 SYSTEM_PROMPT = """You are an expert resume writer specializing in ATS-friendly resumes.
 Tailor the candidate's resume to the job description provided.
-Respond ONLY with a JSON object using exactly these keys, each a single string
-(use \\n between bullet points within a section, no markdown, no tables):
+Respond ONLY with a JSON object using exactly these keys, each a single string:
 CONTACT, SUMMARY, SKILLS, PROJECTS, EXPERIENCE, EDUCATION.
-Focus on concise, measurable, impactful statements aligned with the job description."""
+
+Formatting rules:
+- Use \\n between bullet points within a section. No markdown, no tables.
+- PROJECTS and EXPERIENCE must NOT be reduced to just a title and dates. For every
+  project or role, write 2-4 concise, impactful bullet points describing what was
+  built/done and its outcome, rewritten from the candidate's original description to
+  emphasize the skills, tools, and responsibilities that match the job description.
+  Never drop the underlying description content — only rewrite/reprioritize it.
+- Use the candidate's actual project/experience details as source material; do not
+  invent tools, outcomes, or responsibilities that aren't supported by the candidate data.
+- Focus on concise, measurable, impactful statements aligned with the job description."""
 
 
 # -----------------------------
@@ -72,7 +81,7 @@ def tailor_resume_with_llama(candidate_input, jd_input, client=None, output_pdf_
         f"JOB DESCRIPTION DATA:\n{json.dumps(jd_data, indent=2)}"
     )
     sections = llm_client.generate_json(client, SYSTEM_PROMPT, user_prompt,
-                                         temperature=0.4, max_tokens=1800)
+                                         temperature=0.4, max_tokens=2800)
     # Normalize keys to uppercase to match the template's SECTION_ORDER
     sections = {str(k).upper(): str(v) for k, v in sections.items()}
     text = "\n\n".join(f"{k}\n{v}" for k, v in sections.items())
