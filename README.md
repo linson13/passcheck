@@ -2,7 +2,7 @@
 
 # passcheck
 
-<p align="center">Upload your resume and a job description — Passcheck tailors your resume to match the role using an LLM, then scores it against ATS keyword matching before and after. Get back a clean, ATS-friendly PDF, generated in seconds.</p>
+<p align="center">Upload your resume and a job description  Passcheck tailors your resume to match the role using an LLM, then scores it against ATS keyword matching before and after. Get back a clean, ATS friendly PDF, generated in seconds. This is a continuation from the ats-resume-maker project.</p>
 
 **🔗 Live demo: [passcheck-xpbc.onrender.com](https://passcheck-xpbc.onrender.com)**
 
